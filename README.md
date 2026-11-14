@@ -1,13 +1,13 @@
 # Discord AI Peer — Gemini
 
-For Google Cloud Run hosting in Frankfurt, follow [CLOUD-RUN.md](CLOUD-RUN.md).
-
-A text-only AI participant for a private Discord server channel or thread. Uses Gemini 3.8 Flash, configurable in `.env`. Mention it or reply to its messages; optionally set `REPLY_MODE=always` to answer every human message. It sees the last 30 messages plus the triggering message, with each message capped at 2,000 characters. Context stays separate per channel.
+Discord AI Peer is a Discord bot that uses Gemini to join text conversations in a server channel or thread. It uses Gemini 3.8 Flash by default, which you can change in `.env`. Mention it or reply to its messages; optionally set `REPLY_MODE=always` to answer every human message. It sees the last 30 messages plus the triggering message, with each message capped at 2,000 characters. Context stays separate per channel.
 
 ## 1. Create the Discord bot
 
-1. Open https://discord.com/developers/applications and create an application (for example, “Gemini Peer”).
-2. In **Bot**, obtain/reset the bot token. Keep it private.
+A **Discord bot token** is the secret credential the program uses to sign in as your bot. Anyone who has it can act as the bot, so keep it out of Discord messages and GitHub.
+
+1. Open the [Discord Developer Portal](https://discord.com/developers/applications). Select **New Application**, name it (for example, “Gemini Peer”), and create it. If you already have an application for the bot, open it instead.
+2. Select **Bot** in the sidebar. Under **Token**, click **Reset Token** if you need a new token, confirm, and complete two-factor authentication if prompted. Copy the token before leaving the page and save it as `DISCORD_TOKEN` in your local `.env` file. Resetting the token invalidates the old one, so update any running deployment that uses it. [Discord’s token instructions](https://support-dev.discord.com/hc/en-us/articles/6470840524311-Why-can-t-I-copy-my-bot-s-token).
 3. Enable **Message Content Intent** in the Bot settings. The code requests this intent too.
 4. In **Installation**, configure a **Guild Install** with the `bot` scope. Give it **View Channels**, **Send Messages**, and **Read Message History**. For threads, also grant **Send Messages in Threads** and add it to private threads. Use the generated installation link to install it in your server.
 5. Create a private text channel for your group. Give your friends and the bot access.
@@ -38,7 +38,11 @@ npm start
 
 Wait for `Online as ...`, then post `@Gemini Peer Hey, introduce yourself!` in the allowed channel. Follow up by replying directly to the bot's message (keep reply mentions enabled), or mention it again.
 
-The computer and process must stay running. Stop with Ctrl+C. For continuous availability, run the same folder on an always-on computer or a host that supports persistent Node processes and outbound Discord WebSocket connections. This project is not yet deployed or connected to your accounts.
+The local bot runs while the process is open. Stop it with Ctrl+C.
+
+## Deploy to Google Cloud Run
+
+For continuous hosting, see the [Cloud Run deployment guide](CLOUD-RUN.md). It uses Frankfurt (`europe-west3`) as the example region.
 
 ## Conversation settings
 
