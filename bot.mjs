@@ -85,7 +85,12 @@ client.on(Events.MessageCreate, async message => {
       message_id: message.id, usage: payload.usageMetadata ?? null }));
     const text = responseText(payload);
     if (!text) throw new Error('AI returned no text');
-    const parts = chunks(text);
+    const usage = payload.usageMetadata;
+    const outputTokens = usage?.candidatesTokenCount;
+    const thinkingTokens = usage?.thoughtsTokenCount;
+    const outputLabel = Number.isInteger(outputTokens) ? outputTokens : 'nicht verfügbar';
+    const thinkingLabel = Number.isInteger(thinkingTokens) ? ` · Denk-Tokens: ${thinkingTokens}` : '';
+    const parts = chunks(`${text}\n\n-# Output-Tokens: ${outputLabel}${thinkingLabel}`);
     await message.reply({ content: parts[0] });
     for (const content of parts.slice(1)) await message.channel.send({ content });
   } catch (error) {
